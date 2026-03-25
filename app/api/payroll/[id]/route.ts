@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { payrollRuns, payrollRecords } from '@/drizzle/schema';
+import { payrollRuns, payrollRecords, employees } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { getSession } from '@/lib/auth';
 import { logAudit } from '@/lib/audit';
@@ -29,11 +29,21 @@ export async function GET(
       return NextResponse.json({ error: 'Payroll run not found' }, { status: 404 });
     }
 
-    const records = await db
+    const rawRecords = await db
       .select()
       .from(payrollRecords)
       .where(eq(payrollRecords.runId, runId))
       .orderBy(payrollRecords.employeeNo);
+
+    // Enrich records with kraPin from employees table
+    const records = [];
+    for (const rec of rawRecords) {
+      const emp = await db.query.employees.findFirst({
+        where: eq(employees.id, rec.employeeId),
+        columns: { kraPin: true },
+      });
+      records.push({ ...rec, kraPin: emp?.kraPin || null });
+    }
 
     return NextResponse.json({ run, records });
   } catch {
