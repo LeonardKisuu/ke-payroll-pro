@@ -44,13 +44,15 @@ import { formatCurrency } from '@/lib/utils';
 const EMPLOYEE_TEMPLATE_HEADERS = [
   'employee_no', 'full_name', 'id_number', 'kra_pin', 'nssf_no', 'nhif_no',
   'department', 'designation', 'date_of_joining', 'basic_salary',
-  'house_allowance', 'transport_allowance', 'other_allowances',
+  'house_allowance', 'commuter_allowance', 'car_allowance', 'other_allowances',
+  'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
   'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
   'bank_name', 'bank_branch', 'bank_account_no', 'bank_code', 'payment_method',
 ];
 
 const NUMERIC_FIELDS = [
-  'basic_salary', 'house_allowance', 'transport_allowance', 'other_allowances',
+  'basic_salary', 'house_allowance', 'commuter_allowance', 'car_allowance',
+  'other_allowances', 'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
   'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
 ];
 
@@ -65,8 +67,13 @@ const SYSTEM_FIELDS = [
   { value: 'designation', label: 'Designation' },
   { value: 'basic_salary', label: 'Basic Salary' },
   { value: 'house_allowance', label: 'House Allowance' },
-  { value: 'transport_allowance', label: 'Transport Allowance' },
+  { value: 'commuter_allowance', label: 'Commuter Allowance' },
+  { value: 'car_allowance', label: 'Car Allowance' },
   { value: 'other_allowances', label: 'Other Allowances' },
+  { value: 'bonus_pay', label: 'Bonus Pay' },
+  { value: 'leave_pay', label: 'Leave Pay' },
+  { value: 'leave_deduction', label: 'Leave Deduction' },
+  { value: 'arrears', label: 'Arrears' },
   { value: 'airtime_benefit', label: 'Airtime Benefit' },
   { value: 'internet_benefit', label: 'Internet Benefit' },
   { value: 'other_fringe_benefits', label: 'Other Fringe Benefits' },
@@ -505,7 +512,8 @@ function OverridesTab({ orgId }: { orgId: number }) {
 
       const diffs: OverrideRow[] = [];
       const overrideFields = [
-        'basic_salary', 'house_allowance', 'transport_allowance', 'other_allowances',
+        'basic_salary', 'house_allowance', 'commuter_allowance', 'car_allowance',
+        'other_allowances', 'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
         'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
       ];
 
@@ -538,7 +546,8 @@ function OverridesTab({ orgId }: { orgId: number }) {
       // Fall back to showing all rows as changes without diff
       const diffs: OverrideRow[] = [];
       const overrideFields = [
-        'basic_salary', 'house_allowance', 'transport_allowance', 'other_allowances',
+        'basic_salary', 'house_allowance', 'commuter_allowance', 'car_allowance',
+        'other_allowances', 'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
         'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
       ];
 

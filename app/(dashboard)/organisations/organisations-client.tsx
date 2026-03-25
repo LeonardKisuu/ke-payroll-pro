@@ -6,6 +6,8 @@ import {
   Pencil,
   Building2,
   Loader2,
+  Upload,
+  X,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -284,8 +286,81 @@ export function OrganisationsClient({ organisations: initial }: { organisations:
               </div>
             </div>
             <div>
-              <Label>Logo URL</Label>
-              <Input value={form.logoUrl} onChange={(e) => updateForm('logoUrl', e.target.value)} placeholder="https://..." />
+              <Label>Organisation Logo (PNG/JPEG, max 2MB)</Label>
+              {(form.logoUrl || (editingId && orgs.find((o) => o.id === editingId)?.logoUrl)) ? (
+                <div className="flex items-center gap-3 mt-2">
+                  <img
+                    src={form.logoUrl || orgs.find((o) => o.id === editingId)?.logoUrl || ''}
+                    alt="Logo"
+                    className="h-12 w-auto max-w-[120px] object-contain border rounded p-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive"
+                    onClick={async () => {
+                      if (editingId) {
+                        await fetch(`/api/organisations/logo?orgId=${editingId}`, { method: 'DELETE' });
+                        setOrgs((prev) => prev.map((o) => o.id === editingId ? { ...o, logoUrl: null } : o));
+                      }
+                      setForm((prev) => ({ ...prev, logoUrl: '' }));
+                      toast.success('Logo removed');
+                    }}
+                  >
+                    <X className="h-4 w-4 mr-1" />Remove
+                  </Button>
+                </div>
+              ) : (
+                <div className="mt-2">
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <label className="cursor-pointer">
+                      <Upload className="mr-2 h-4 w-4" />Upload Logo
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 2 * 1024 * 1024) {
+                            toast.error('File must be under 2MB');
+                            return;
+                          }
+                          if (!['image/png', 'image/jpeg'].includes(file.type)) {
+                            toast.error('Only PNG and JPEG files are allowed');
+                            return;
+                          }
+                          if (editingId) {
+                            // Upload directly to API
+                            const fd = new FormData();
+                            fd.append('logo', file);
+                            fd.append('orgId', String(editingId));
+                            const res = await fetch('/api/organisations/logo', { method: 'POST', body: fd });
+                            if (res.ok) {
+                              const data = await res.json();
+                              setForm((prev) => ({ ...prev, logoUrl: data.logoUrl }));
+                              setOrgs((prev) => prev.map((o) => o.id === editingId ? { ...o, logoUrl: data.logoUrl } : o));
+                              toast.success('Logo uploaded');
+                            } else {
+                              toast.error('Failed to upload logo');
+                            }
+                          } else {
+                            // For new orgs, convert to base64 in-browser
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                              setForm((prev) => ({ ...prev, logoUrl: reader.result as string }));
+                              toast.success('Logo loaded');
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

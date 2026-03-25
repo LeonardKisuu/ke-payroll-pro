@@ -36,8 +36,13 @@ async function migrate() {
       date_of_joining TEXT,
       basic_salary REAL NOT NULL DEFAULT 0,
       house_allowance REAL DEFAULT 0,
-      transport_allowance REAL DEFAULT 0,
+      commuter_allowance REAL DEFAULT 0,
+      car_allowance REAL DEFAULT 0,
       other_allowances REAL DEFAULT 0,
+      bonus_pay REAL DEFAULT 0,
+      leave_pay REAL DEFAULT 0,
+      leave_deduction REAL DEFAULT 0,
+      arrears REAL DEFAULT 0,
       airtime_benefit REAL DEFAULT 0,
       internet_benefit REAL DEFAULT 0,
       other_fringe_benefits REAL DEFAULT 0,
@@ -107,8 +112,13 @@ async function migrate() {
       employee_name TEXT,
       basic_salary REAL DEFAULT 0,
       house_allowance REAL DEFAULT 0,
-      transport_allowance REAL DEFAULT 0,
+      commuter_allowance REAL DEFAULT 0,
+      car_allowance REAL DEFAULT 0,
       other_allowances REAL DEFAULT 0,
+      bonus_pay REAL DEFAULT 0,
+      leave_pay REAL DEFAULT 0,
+      leave_deduction REAL DEFAULT 0,
+      arrears REAL DEFAULT 0,
       gross_pay REAL DEFAULT 0,
       airtime_benefit REAL DEFAULT 0,
       internet_benefit REAL DEFAULT 0,
@@ -159,6 +169,45 @@ async function migrate() {
   `);
 
   console.log('✅ All tables created/verified successfully.\n');
+
+  // ── ALTER TABLE migrations for existing databases ──────────────────
+  console.log('🔄 Running ALTER TABLE migrations...');
+
+  const alterStatements = [
+    // Rename transport_allowance → commuter_allowance (employees)
+    'ALTER TABLE employees RENAME COLUMN transport_allowance TO commuter_allowance',
+    // Add new columns to employees
+    'ALTER TABLE employees ADD COLUMN car_allowance REAL DEFAULT 0',
+    'ALTER TABLE employees ADD COLUMN bonus_pay REAL DEFAULT 0',
+    'ALTER TABLE employees ADD COLUMN leave_pay REAL DEFAULT 0',
+    'ALTER TABLE employees ADD COLUMN leave_deduction REAL DEFAULT 0',
+    'ALTER TABLE employees ADD COLUMN arrears REAL DEFAULT 0',
+    // Rename transport_allowance → commuter_allowance (payroll_records)
+    'ALTER TABLE payroll_records RENAME COLUMN transport_allowance TO commuter_allowance',
+    // Add new columns to payroll_records
+    'ALTER TABLE payroll_records ADD COLUMN car_allowance REAL DEFAULT 0',
+    'ALTER TABLE payroll_records ADD COLUMN bonus_pay REAL DEFAULT 0',
+    'ALTER TABLE payroll_records ADD COLUMN leave_pay REAL DEFAULT 0',
+    'ALTER TABLE payroll_records ADD COLUMN leave_deduction REAL DEFAULT 0',
+    'ALTER TABLE payroll_records ADD COLUMN arrears REAL DEFAULT 0',
+  ];
+
+  for (const stmt of alterStatements) {
+    try {
+      await client.execute(stmt);
+      console.log(`  ✅ ${stmt.substring(0, 60)}...`);
+    } catch (err) {
+      // Ignore errors (column already exists or already renamed)
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.includes('duplicate column') || msg.includes('already exists') || msg.includes('no such column')) {
+        console.log(`  ⏭️  Skipped (already applied): ${stmt.substring(0, 50)}...`);
+      } else {
+        console.log(`  ⚠️  ${msg}: ${stmt.substring(0, 50)}...`);
+      }
+    }
+  }
+
+  console.log('✅ ALTER TABLE migrations complete.\n');
   process.exit(0);
 }
 

@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from '@react-pdf/renderer';
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -32,8 +33,13 @@ export interface PayslipData {
   year: number;
   basicSalary: number;
   houseAllowance: number;
-  transportAllowance: number;
+  commuterAllowance: number;
+  carAllowance: number;
   otherAllowances: number;
+  bonusPay: number;
+  leavePay: number;
+  leaveDeduction: number;
+  arrears: number;
   grossPay: number;
   fringeBenefits: number;
   nssfEmployee: number;
@@ -369,6 +375,9 @@ export function PayslipDocument({ data }: { data: PayslipData }) {
             {data.orgContact && <Text style={styles.orgDetail}>{data.orgContact}</Text>}
           </View>
           <View style={styles.headerRight}>
+            {data.orgLogo && (
+              <Image src={data.orgLogo} style={{ width: 50, height: 50, marginBottom: 4, objectFit: 'contain' }} />
+            )}
             <Text style={styles.periodText}>{period}</Text>
           </View>
         </View>
@@ -427,10 +436,15 @@ export function PayslipDocument({ data }: { data: PayslipData }) {
         </View>
         <EarningsRow label="Basic Salary" value={data.basicSalary} idx={0} />
         <EarningsRow label="House Allowance" value={data.houseAllowance} idx={1} />
-        <EarningsRow label="Transport Allowance" value={data.transportAllowance} idx={2} />
-        <EarningsRow label="Other Allowances" value={data.otherAllowances} idx={3} />
+        <EarningsRow label="Commuter Allowance" value={data.commuterAllowance} idx={2} />
+        {data.carAllowance > 0 && <EarningsRow label="Car Allowance" value={data.carAllowance} idx={3} />}
+        <EarningsRow label="Other Allowances" value={data.otherAllowances} idx={4} />
+        {data.bonusPay > 0 && <EarningsRow label="Bonus Pay" value={data.bonusPay} idx={5} />}
+        {data.leavePay > 0 && <EarningsRow label="Leave Pay" value={data.leavePay} idx={6} />}
+        {data.leaveDeduction > 0 && <EarningsRow label="Leave Deduction" value={-data.leaveDeduction} idx={7} />}
+        {data.arrears > 0 && <EarningsRow label="Arrears" value={data.arrears} idx={8} />}
         {data.fringeBenefits > 0 && (
-          <EarningsRow label="Fringe Benefits (BIK)" value={data.fringeBenefits} idx={4} />
+          <EarningsRow label="Fringe Benefits (BIK)" value={data.fringeBenefits} idx={9} />
         )}
         <View style={[styles.tableRow, { borderTop: '1 solid #333', borderBottom: '1 solid #333' }]}>
           <Text style={styles.tableLabelBold}>Total Gross Pay</Text>
@@ -627,6 +641,9 @@ export function BulkPayslipDocument({ payslips }: { payslips: PayslipData[] }) {
                 {data.orgContact && <Text style={styles.orgDetail}>{data.orgContact}</Text>}
               </View>
               <View style={styles.headerRight}>
+                {data.orgLogo && (
+                  <Image src={data.orgLogo} style={{ width: 50, height: 50, marginBottom: 4, objectFit: 'contain' }} />
+                )}
                 <Text style={styles.periodText}>{period}</Text>
               </View>
             </View>
@@ -685,10 +702,15 @@ export function BulkPayslipDocument({ payslips }: { payslips: PayslipData[] }) {
             </View>
             <EarningsRow label="Basic Salary" value={data.basicSalary} idx={0} />
             <EarningsRow label="House Allowance" value={data.houseAllowance} idx={1} />
-            <EarningsRow label="Transport Allowance" value={data.transportAllowance} idx={2} />
-            <EarningsRow label="Other Allowances" value={data.otherAllowances} idx={3} />
+            <EarningsRow label="Commuter Allowance" value={data.commuterAllowance} idx={2} />
+        {data.carAllowance > 0 && <EarningsRow label="Car Allowance" value={data.carAllowance} idx={3} />}
+            <EarningsRow label="Other Allowances" value={data.otherAllowances} idx={4} />
+            {data.bonusPay > 0 && <EarningsRow label="Bonus Pay" value={data.bonusPay} idx={5} />}
+            {data.leavePay > 0 && <EarningsRow label="Leave Pay" value={data.leavePay} idx={6} />}
+            {data.leaveDeduction > 0 && <EarningsRow label="Leave Deduction" value={-data.leaveDeduction} idx={7} />}
+            {data.arrears > 0 && <EarningsRow label="Arrears" value={data.arrears} idx={8} />}
             {data.fringeBenefits > 0 && (
-              <EarningsRow label="Fringe Benefits (BIK)" value={data.fringeBenefits} idx={4} />
+              <EarningsRow label="Fringe Benefits (BIK)" value={data.fringeBenefits} idx={9} />
             )}
             <View style={[styles.tableRow, { borderTop: '1 solid #333', borderBottom: '1 solid #333' }]}>
               <Text style={styles.tableLabelBold}>Total Gross Pay</Text>
@@ -794,8 +816,13 @@ export interface P9Data {
     month: number;
     basicSalary: number;
     houseAllowance: number;
-    transportAllowance: number;
+    commuterAllowance: number;
+    carAllowance: number;
     otherAllowances: number;
+    bonusPay: number;
+    leavePay: number;
+    leaveDeduction: number;
+    arrears: number;
     grossPay: number;
     nssfEmployee: number;
     pensionContributions: number;
@@ -927,8 +954,9 @@ const P9_COLUMNS = [
   { header: 'Month', key: 'month', width: 8, isMonth: true },
   { header: 'Basic\nSalary', key: 'basicSalary', width: 8 },
   { header: 'Housing\nAllow.', key: 'houseAllowance', width: 7 },
-  { header: 'Transport\nAllow.', key: 'transportAllowance', width: 7 },
-  { header: 'Other\nAllow.', key: 'otherAllowances', width: 7 },
+  { header: 'Commuter\nAllow.', key: 'commuterAllowance', width: 7 },
+  { header: 'Car\nAllow.', key: 'carAllowance', width: 6 },
+  { header: 'Other\nAllow.', key: 'otherAllowances', width: 6 },
   { header: 'Gross\nPay', key: 'grossPay', width: 8 },
   { header: 'NSSF\n(Employee)', key: 'nssfEmployee', width: 7 },
   { header: 'Pension\nContrib.', key: 'pensionContributions', width: 7 },
@@ -940,7 +968,7 @@ const P9_COLUMNS = [
 ];
 
 const P9_TOTAL_KEYS = [
-  'basicSalary', 'houseAllowance', 'transportAllowance', 'otherAllowances',
+  'basicSalary', 'houseAllowance', 'commuterAllowance', 'carAllowance', 'otherAllowances',
   'grossPay', 'nssfEmployee', 'pensionContributions', 'taxableIncome',
   'payeGrossTax', 'personalRelief', 'pensionRelief', 'paye',
 ];

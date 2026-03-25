@@ -7,15 +7,17 @@ import { getSession } from '@/lib/auth';
 const EMPLOYEE_TEMPLATE_HEADERS = [
   'employee_no', 'full_name', 'id_number', 'kra_pin', 'nssf_no', 'nhif_no',
   'department', 'designation', 'date_of_joining', 'basic_salary',
-  'house_allowance', 'transport_allowance', 'other_allowances',
+  'house_allowance', 'commuter_allowance', 'car_allowance', 'other_allowances',
+  'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
   'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
   'bank_name', 'bank_branch', 'bank_account_no', 'bank_code', 'payment_method',
 ];
 
 const OVERRIDE_HEADERS = [
   'employee_no', 'full_name', 'basic_salary', 'house_allowance',
-  'transport_allowance', 'other_allowances', 'airtime_benefit',
-  'internet_benefit', 'other_fringe_benefits',
+  'commuter_allowance', 'car_allowance', 'other_allowances',
+  'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
+  'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
 ];
 
 function escapeCsvField(value: string | number | null | undefined): string {
@@ -58,8 +60,13 @@ export async function GET(request: NextRequest) {
         full_name: e.fullName,
         basic_salary: String(e.basicSalary ?? 0),
         house_allowance: String(e.houseAllowance ?? 0),
-        transport_allowance: String(e.transportAllowance ?? 0),
+        commuter_allowance: String(e.commuterAllowance ?? 0),
+        car_allowance: String(e.carAllowance ?? 0),
         other_allowances: String(e.otherAllowances ?? 0),
+        bonus_pay: String(e.bonusPay ?? 0),
+        leave_pay: String(e.leavePay ?? 0),
+        leave_deduction: String(e.leaveDeduction ?? 0),
+        arrears: String(e.arrears ?? 0),
         airtime_benefit: String(e.airtimeBenefit ?? 0),
         internet_benefit: String(e.internetBenefit ?? 0),
         other_fringe_benefits: String(e.otherFringeBenefits ?? 0),
@@ -95,8 +102,13 @@ export async function GET(request: NextRequest) {
             e.fullName,
             e.basicSalary ?? 0,
             e.houseAllowance ?? 0,
-            e.transportAllowance ?? 0,
+            e.commuterAllowance ?? 0,
+            e.carAllowance ?? 0,
             e.otherAllowances ?? 0,
+            e.bonusPay ?? 0,
+            e.leavePay ?? 0,
+            e.leaveDeduction ?? 0,
+            e.arrears ?? 0,
             e.airtimeBenefit ?? 0,
             e.internetBenefit ?? 0,
             e.otherFringeBenefits ?? 0,

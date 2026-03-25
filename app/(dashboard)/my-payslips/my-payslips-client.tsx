@@ -36,8 +36,13 @@ interface PayslipSummary {
   netPay: number;
   basicSalary: number;
   houseAllowance: number;
-  transportAllowance: number;
+  commuterAllowance: number;
+  carAllowance: number;
   otherAllowances: number;
+  bonusPay: number;
+  leavePay: number;
+  leaveDeduction: number;
+  arrears: number;
   fringeBenefits: number;
   nssfEmployee: number;
   nssfEmployer: number;
@@ -177,8 +182,23 @@ export function MyPayslipsClient({
                   <div className="space-y-1">
                     <Row label="Basic Salary" value={selectedPayslip.basicSalary} />
                     <Row label="House Allowance" value={selectedPayslip.houseAllowance} />
-                    <Row label="Transport Allowance" value={selectedPayslip.transportAllowance} />
+                    <Row label="Commuter Allowance" value={selectedPayslip.commuterAllowance} />
+                    {selectedPayslip.carAllowance > 0 && (
+                      <Row label="Car Allowance" value={selectedPayslip.carAllowance} />
+                    )}
                     <Row label="Other Allowances" value={selectedPayslip.otherAllowances} />
+                    {selectedPayslip.bonusPay > 0 && (
+                      <Row label="Bonus Pay" value={selectedPayslip.bonusPay} />
+                    )}
+                    {selectedPayslip.leavePay > 0 && (
+                      <Row label="Leave Pay" value={selectedPayslip.leavePay} />
+                    )}
+                    {selectedPayslip.leaveDeduction > 0 && (
+                      <Row label="Leave Deduction" value={-selectedPayslip.leaveDeduction} />
+                    )}
+                    {selectedPayslip.arrears > 0 && (
+                      <Row label="Arrears" value={selectedPayslip.arrears} />
+                    )}
                     {selectedPayslip.fringeBenefits > 0 && (
                       <Row label="Fringe Benefits" value={selectedPayslip.fringeBenefits} />
                     )}

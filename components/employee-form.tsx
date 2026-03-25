@@ -46,8 +46,13 @@ const employeeSchema = z.object({
   dateOfJoining: z.string().optional(),
   basicSalary: z.coerce.number().min(0, 'Must be 0 or more'),
   houseAllowance: z.coerce.number().min(0).default(0),
-  transportAllowance: z.coerce.number().min(0).default(0),
+  commuterAllowance: z.coerce.number().min(0).default(0),
+  carAllowance: z.coerce.number().min(0).default(0),
   otherAllowances: z.coerce.number().min(0).default(0),
+  bonusPay: z.coerce.number().min(0).default(0),
+  leavePay: z.coerce.number().min(0).default(0),
+  leaveDeduction: z.coerce.number().min(0).default(0),
+  arrears: z.coerce.number().min(0).default(0),
   airtimeBenefit: z.coerce.number().min(0).default(0),
   internetBenefit: z.coerce.number().min(0).default(0),
   otherFringeBenefits: z.coerce.number().min(0).default(0),
@@ -90,8 +95,13 @@ interface EmployeeFormProps {
     dateOfJoining: string | null;
     basicSalary: number;
     houseAllowance: number | null;
-    transportAllowance: number | null;
+    commuterAllowance: number | null;
+    carAllowance: number | null;
     otherAllowances: number | null;
+    bonusPay: number | null;
+    leavePay: number | null;
+    leaveDeduction: number | null;
+    arrears: number | null;
     airtimeBenefit: number | null;
     internetBenefit: number | null;
     otherFringeBenefits: number | null;
@@ -146,8 +156,13 @@ export function EmployeeForm({ employee, orgDeductions, isNew }: EmployeeFormPro
       dateOfJoining: employee?.dateOfJoining || '',
       basicSalary: employee?.basicSalary || 0,
       houseAllowance: employee?.houseAllowance || 0,
-      transportAllowance: employee?.transportAllowance || 0,
+      commuterAllowance: employee?.commuterAllowance || 0,
+      carAllowance: employee?.carAllowance || 0,
       otherAllowances: employee?.otherAllowances || 0,
+      bonusPay: employee?.bonusPay || 0,
+      leavePay: employee?.leavePay || 0,
+      leaveDeduction: employee?.leaveDeduction || 0,
+      arrears: employee?.arrears || 0,
       airtimeBenefit: employee?.airtimeBenefit || 0,
       internetBenefit: employee?.internetBenefit || 0,
       otherFringeBenefits: employee?.otherFringeBenefits || 0,
@@ -162,9 +177,14 @@ export function EmployeeForm({ employee, orgDeductions, isNew }: EmployeeFormPro
 
   const basicSalary = watch('basicSalary');
   const houseAllowance = watch('houseAllowance');
-  const transportAllowance = watch('transportAllowance');
+  const commuterAllowance = watch('commuterAllowance');
+  const carAllowance = watch('carAllowance');
   const otherAllowances = watch('otherAllowances');
-  const grossPay = (basicSalary || 0) + (houseAllowance || 0) + (transportAllowance || 0) + (otherAllowances || 0);
+  const bonusPay = watch('bonusPay');
+  const leavePay = watch('leavePay');
+  const leaveDeduction = watch('leaveDeduction');
+  const arrears = watch('arrears');
+  const grossPay = (basicSalary || 0) + (houseAllowance || 0) + (commuterAllowance || 0) + (carAllowance || 0) + (otherAllowances || 0) + (bonusPay || 0) + (leavePay || 0) + (arrears || 0) - (leaveDeduction || 0);
 
   function toggleDeduction(dedId: number) {
     setDeductionAssignments((prev) => {
@@ -363,13 +383,40 @@ export function EmployeeForm({ employee, orgDeductions, isNew }: EmployeeFormPro
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="transportAllowance">Transport Allowance (KES)</Label>
-                <Input id="transportAllowance" type="number" step="0.01" min="0" {...register('transportAllowance')} />
+                <Label htmlFor="commuterAllowance">Commuter Allowance (KES)</Label>
+                <Input id="commuterAllowance" type="number" step="0.01" min="0" {...register('commuterAllowance')} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="carAllowance">Car Allowance (KES)</Label>
+                <Input id="carAllowance" type="number" step="0.01" min="0" {...register('carAllowance')} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="otherAllowances">Other Allowances (KES)</Label>
                 <Input id="otherAllowances" type="number" step="0.01" min="0" {...register('otherAllowances')} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="bonusPay">Bonus Pay (KES)</Label>
+                <Input id="bonusPay" type="number" step="0.01" min="0" {...register('bonusPay')} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="leavePay">Leave Pay (KES)</Label>
+                <Input id="leavePay" type="number" step="0.01" min="0" {...register('leavePay')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="leaveDeduction">Leave Deduction (KES)</Label>
+                <Input id="leaveDeduction" type="number" step="0.01" min="0" {...register('leaveDeduction')} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="arrears">Arrears (KES)</Label>
+                <Input id="arrears" type="number" step="0.01" min="0" {...register('arrears')} />
+              </div>
+              <div />
             </div>
             <Separator />
             <div className="flex justify-between items-center pt-1">

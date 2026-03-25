@@ -41,8 +41,13 @@ interface PayrollRecord {
   kraPin?: string | null;
   basicSalary: number | null;
   houseAllowance: number | null;
-  transportAllowance: number | null;
+  commuterAllowance: number | null;
+  carAllowance: number | null;
   otherAllowances: number | null;
+  bonusPay: number | null;
+  leavePay: number | null;
+  leaveDeduction: number | null;
+  arrears: number | null;
   grossPay: number | null;
   fringeBenefits: number | null;
   grossForPaye: number | null;

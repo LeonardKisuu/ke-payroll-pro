@@ -19,8 +19,13 @@ const FIELD_MAP: Record<string, string> = {
   date_of_joining: 'dateOfJoining',
   basic_salary: 'basicSalary',
   house_allowance: 'houseAllowance',
-  transport_allowance: 'transportAllowance',
+  commuter_allowance: 'commuterAllowance',
+  car_allowance: 'carAllowance',
   other_allowances: 'otherAllowances',
+  bonus_pay: 'bonusPay',
+  leave_pay: 'leavePay',
+  leave_deduction: 'leaveDeduction',
+  arrears: 'arrears',
   airtime_benefit: 'airtimeBenefit',
   internet_benefit: 'internetBenefit',
   other_fringe_benefits: 'otherFringeBenefits',
@@ -32,7 +37,8 @@ const FIELD_MAP: Record<string, string> = {
 };
 
 const NUMERIC_FIELDS = [
-  'basic_salary', 'house_allowance', 'transport_allowance', 'other_allowances',
+  'basic_salary', 'house_allowance', 'commuter_allowance', 'car_allowance',
+  'other_allowances', 'bonus_pay', 'leave_pay', 'leave_deduction', 'arrears',
   'airtime_benefit', 'internet_benefit', 'other_fringe_benefits',
 ];
 

@@ -56,8 +56,13 @@ interface CustomDeductionInput {
 interface EmployeeInput {
   basicSalary: number;
   houseAllowance: number;
-  transportAllowance: number;
+  commuterAllowance: number;
+  carAllowance: number;
   otherAllowances: number;
+  bonusPay: number;
+  leavePay: number;
+  leaveDeduction: number;
+  arrears: number;
   airtimeBenefit: number;
   internetBenefit: number;
   otherFringeBenefits: number;
@@ -67,8 +72,13 @@ interface EmployeeInput {
 export interface PayrollResult {
   basicSalary: number;
   houseAllowance: number;
-  transportAllowance: number;
+  commuterAllowance: number;
+  carAllowance: number;
   otherAllowances: number;
+  bonusPay: number;
+  leavePay: number;
+  leaveDeduction: number;
+  arrears: number;
   grossPay: number;
   airtimeBenefit: number;
   internetBenefit: number;
@@ -136,7 +146,7 @@ function calculatePAYE(taxableIncome: number): number {
  * computePayroll — The core statutory payroll calculation function.
  *
  * Follows KRA-mandated calculation order:
- * 1. Gross Cash Pay = Basic + House + Transport + Other Allowances
+ * 1. Gross Cash Pay = Basic + House + Commuter + Car + Other + Bonus + Leave Pay + Arrears - Leave Deduction
  * 2. Fringe Benefits (airtime, internet, other) — added to PAYE gross only
  * 3. NSSF Employee (on gross cash pay)
  * 4. SHIF (on gross cash pay)
@@ -153,9 +163,14 @@ export function computePayroll(
   // Step 1: Gross Cash Pay
   const basicSalary = round2(employee.basicSalary || 0);
   const houseAllowance = round2(employee.houseAllowance || 0);
-  const transportAllowance = round2(employee.transportAllowance || 0);
+  const commuterAllowance = round2(employee.commuterAllowance || 0);
+  const carAllowance = round2(employee.carAllowance || 0);
   const otherAllowances = round2(employee.otherAllowances || 0);
-  const grossPay = round2(basicSalary + houseAllowance + transportAllowance + otherAllowances);
+  const bonusPay = round2(employee.bonusPay || 0);
+  const leavePay = round2(employee.leavePay || 0);
+  const leaveDeduction = round2(employee.leaveDeduction || 0);
+  const arrears = round2(employee.arrears || 0);
+  const grossPay = round2(basicSalary + houseAllowance + commuterAllowance + carAllowance + otherAllowances + bonusPay + leavePay + arrears - leaveDeduction);
 
   // Step 2: Fringe Benefits (added to PAYE gross only, not to net pay calc)
   const airtimeBenefit = round2(employee.airtimeBenefit || 0);
@@ -229,8 +244,13 @@ export function computePayroll(
   return {
     basicSalary,
     houseAllowance,
-    transportAllowance,
+    commuterAllowance,
+    carAllowance,
     otherAllowances,
+    bonusPay,
+    leavePay,
+    leaveDeduction,
+    arrears,
     grossPay,
     airtimeBenefit,
     internetBenefit,

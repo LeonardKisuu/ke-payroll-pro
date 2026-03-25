@@ -10,8 +10,13 @@ interface PayrollRecordRow {
   employeeName: string | null;
   basicSalary: number | null;
   houseAllowance: number | null;
-  transportAllowance: number | null;
+  commuterAllowance: number | null;
+  carAllowance: number | null;
   otherAllowances: number | null;
+  bonusPay: number | null;
+  leavePay: number | null;
+  leaveDeduction: number | null;
+  arrears: number | null;
   grossPay: number | null;
   airtimeBenefit: number | null;
   internetBenefit: number | null;
@@ -130,8 +135,9 @@ export function generatePayrollSummary(
     [`Period: ${MONTH_NAMES[month]} ${year}`],
   ];
   const headers = [
-    'No', 'Emp No', 'Employee Name', 'Basic Salary', 'House Allow.', 'Transport Allow.',
-    'Other Allow.', 'Gross Pay', 'Fringe Benefits', 'Gross for PAYE',
+    'No', 'Emp No', 'Employee Name', 'Basic Salary', 'House Allow.', 'Commuter Allow.',
+    'Car Allow.', 'Other Allow.', 'Bonus Pay', 'Leave Pay', 'Leave Ded.', 'Arrears',
+    'Gross Pay', 'Fringe Benefits', 'Gross for PAYE',
     'NSSF (Emp)', 'NSSF (Empr)', 'SHIF', 'AHL (Emp)', 'AHL (Empr)',
     'Pension Contrib.', 'Pension Relief', 'Taxable Income', 'PAYE Gross Tax',
     'Personal Relief', 'PAYE', 'Custom Ded.', 'Total Deductions', 'Net Pay', 'NITA',
@@ -142,8 +148,13 @@ export function generatePayrollSummary(
     r.employeeName || '',
     n(r.basicSalary),
     n(r.houseAllowance),
-    n(r.transportAllowance),
+    n(r.commuterAllowance),
+    n(r.carAllowance),
     n(r.otherAllowances),
+    n(r.bonusPay),
+    n(r.leavePay),
+    n(r.leaveDeduction),
+    n(r.arrears),
     n(r.grossPay),
     n(r.fringeBenefits),
     n(r.grossForPaye),
@@ -167,8 +178,13 @@ export function generatePayrollSummary(
     '', '', 'TOTAL',
     sumCol(records, 'basicSalary'),
     sumCol(records, 'houseAllowance'),
-    sumCol(records, 'transportAllowance'),
+    sumCol(records, 'commuterAllowance'),
+    sumCol(records, 'carAllowance'),
     sumCol(records, 'otherAllowances'),
+    sumCol(records, 'bonusPay'),
+    sumCol(records, 'leavePay'),
+    sumCol(records, 'leaveDeduction'),
+    sumCol(records, 'arrears'),
     sumCol(records, 'grossPay'),
     sumCol(records, 'fringeBenefits'),
     sumCol(records, 'grossForPaye'),
@@ -189,7 +205,7 @@ export function generatePayrollSummary(
     sumCol(records, 'nita'),
   ];
   const widths = [
-    6, 12, 28, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 10,
+    6, 12, 28, 14, 14, 14, 12, 14, 12, 12, 12, 12, 14, 14, 14, 14, 14, 12, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 10,
   ];
   return createWorkbook('Payroll Summary', title, headers, data, totals, widths);
 }

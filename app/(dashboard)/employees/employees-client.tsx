@@ -111,8 +111,13 @@ export function EmployeesClient({ employees, role }: EmployeesClientProps) {
         const gross =
           (emp.basicSalary || 0) +
           (emp.houseAllowance || 0) +
-          (emp.transportAllowance || 0) +
-          (emp.otherAllowances || 0);
+          (emp.commuterAllowance || 0) +
+          (emp.carAllowance || 0) +
+          (emp.otherAllowances || 0) +
+          (emp.bonusPay || 0) +
+          (emp.leavePay || 0) +
+          (emp.arrears || 0) -
+          (emp.leaveDeduction || 0);
         return <span className="font-mono text-right block">{formatCurrency(gross)}</span>;
       },
     },
